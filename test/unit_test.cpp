@@ -28,7 +28,8 @@ SOFTWARE.
 
 class Test1 : BEGIN_OBJECT(Test1)
 public:
-  virtual void test_slot(double d) {};
+  virtual ~Test1() = default;
+  virtual void test_slot(double) {};
   SIGNAL(test_signal, double);
   void test_imit(double data) {
     EMIT(&Test1::test_signal,  data);
@@ -44,7 +45,8 @@ class MockTest1 : public Test1
 ///
 class Test2: BEGIN_OBJECT(Test2) 
 public:
-  virtual void test_slot(double d) {};
+  virtual ~Test2() = default;
+  virtual void test_slot(double) {};
   SIGNAL(test_signal, double);
   void test_imit(double data) {
     EMIT(&Test2::test_signal,  data);

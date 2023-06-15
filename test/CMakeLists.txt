@@ -25,10 +25,6 @@ SOFTWARE.
 cmake_minimum_required(VERSION 3.14)
 project(SignalHandler)
 
-# GoogleTest requires at least C++14
-# set(CMAKE_CXX_STANDARD 14)
-# set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 include_directories(../include)
 
 include(FetchContent)
@@ -53,6 +49,12 @@ target_link_libraries(
   GTest::gtest_main
   GTest::gmock_main
 )
+
+if(MSVC)
+  target_compile_options(unit_test PRIVATE /W4 /WX)
+else()
+  target_compile_options(unit_test PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
 
 include(GoogleTest)
 gtest_discover_tests(unit_test)

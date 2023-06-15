@@ -164,9 +164,8 @@ public:
  */
   template<typename SenderT, typename SenderArgT, typename ResiverT, typename ResiverArgT>
   static void disconnect(SenderT & sender, SenderArgT signal, ResiverT & resiver, ResiverArgT slot) {
-    check_signal_slot_types(sender, signal, resiver, slot);
+    check_signal_slot_types<SenderT, SenderArgT, ResiverT, ResiverArgT>();
     ResiverPtr l_resiver = &resiver;
-    SenderPtr l_sender = &sender;
     SignalPtr l_signal = reinterpret_cast<SignalPtr&>(signal);
     SlotPtr l_slot = reinterpret_cast<SlotPtr&>(slot);
 
@@ -214,12 +213,12 @@ private:
   }
 
   template<typename SenderT, typename SenderArgT, typename ResiverT, typename ResiverArgT>
-  static inline void check_signal_slot_types(SenderT & sender, SenderArgT signal, ResiverT & resiver, ResiverArgT slot) {
+  static inline void check_signal_slot_types() {
     static_assert(std::is_same<typename MethodInfo<ResiverArgT>::ClassType, ResiverT>::value
-                  or std::is_base_of<typename MethodInfo<ResiverArgT>::ClassType, ResiverT>::value,
+                  || std::is_base_of<typename MethodInfo<ResiverArgT>::ClassType, ResiverT>::value,
                   "Resiver type error");
     static_assert(std::is_same<typename MethodInfo<SenderArgT>::ClassType, SenderT>::value
-                  or std::is_base_of<typename MethodInfo<SenderArgT>::ClassType, SenderT>::value,
+                  || std::is_base_of<typename MethodInfo<SenderArgT>::ClassType, SenderT>::value,
                   "Sender type error");
 
     static_assert(std::is_same<typename MethodInfo<SenderArgT>::ArgsTuple, typename MethodInfo<ResiverArgT>::ArgsTuple>::value,
@@ -228,8 +227,7 @@ private:
 
   template<typename SenderT, typename SenderArgT, typename ResiverT, typename ResiverArgT>
   static void _connect(SenderT & sender, SenderArgT signal, ResiverT & resiver, ResiverArgT slot) {
-    check_signal_slot_types(sender, signal, resiver, slot);
-    SenderPtr l_sender = &sender;
+    check_signal_slot_types<SenderT, SenderArgT, ResiverT, ResiverArgT>();
     ResiverPtr l_resiver = &resiver;
     SignalPtr l_signal = reinterpret_cast<SignalPtr&>(signal);
     SlotPtr l_slot = reinterpret_cast<SlotPtr&>(slot);
