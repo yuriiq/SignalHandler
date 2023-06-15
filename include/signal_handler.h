@@ -205,13 +205,6 @@ private:
       (static_cast<ObjectT*>(this)->*f_ptr)(params...);
   }
 
-  template<class ... Args>
-  static void slot_handle(void * slot, Args && ... params) {
-      // SlotT f_ptr = 0;
-      // reinterpret_cast<void*&>(f_ptr) = slot;
-      // f_ptr(params...);
-  }
-
   template<typename SenderT, typename SenderArgT, typename ResiverT, typename ResiverArgT>
   static inline void check_signal_slot_types() {
     static_assert(std::is_same<typename MethodInfo<ResiverArgT>::ClassType, ResiverT>::value
