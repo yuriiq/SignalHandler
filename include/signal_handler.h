@@ -97,6 +97,7 @@ public:
 
   SignalHandler() {}
   ~SignalHandler() {
+    signal_emit(&SignalHandler::deleted, this);
     signal_emit(&SignalHandler::deleted, static_cast<ObjectT*>(this));
   }
 
@@ -138,8 +139,10 @@ public:
  */
   template<typename SenderT, typename SenderArgT, typename ResiverT, typename ResiverArgT>
   static void connect(SenderT & sender, SenderArgT signal, ResiverT & resiver, ResiverArgT slot) {
+    check_signal_slot_types<SenderT, SenderArgT, ResiverT, ResiverArgT>();
     _connect(sender, signal, resiver, slot);
-    _connect(resiver, &ResiverT::deleted, static_cast<typename SenderT::ParentT&>(sender), &SenderT::disconnect_all);
+    _connect(sender, &SenderT::deleted, static_cast<typename ResiverT::ParentT&>(resiver), &ResiverT::disconnect_all);
+    _connect(resiver, &ResiverT::deleted, static_cast<typename SenderT::ParentT&> (sender), &SenderT::disconnect_all);
   }
 
 /*
@@ -220,7 +223,6 @@ private:
 
   template<typename SenderT, typename SenderArgT, typename ResiverT, typename ResiverArgT>
   static void _connect(SenderT & sender, SenderArgT signal, ResiverT & resiver, ResiverArgT slot) {
-    check_signal_slot_types<SenderT, SenderArgT, ResiverT, ResiverArgT>();
     ResiverPtr l_resiver = &resiver;
     SignalPtr l_signal = reinterpret_cast<SignalPtr&>(signal);
     SlotPtr l_slot = reinterpret_cast<SlotPtr&>(slot);
